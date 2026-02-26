@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContextFocus</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0c14;
+    --surface: #13131f;
+    --surface2: #1a1a28;
+    --border: #252535;
+    --accent: #6ee7b7;
+    --accent-dim: rgba(110,231,183,0.12);
+    --amber: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --danger: #f87171;
+  }
+
+  body {
+    font-family: 'Space Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    width: 340px;
+    min-height: 420px;
+    overflow: hidden;
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(110,231,183,0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-icon svg {
+    width: 16px; height: 16px;
+    color: var(--accent);
+  }
+
+  .logo-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-version {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .settings-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 28px; height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .settings-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Focus Status Card ── */
+  .status-card {
+    margin: 16px;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+
+  .status-card.active {
+    border-color: rgba(110,231,183,0.4);
+    background: linear-gradient(135deg, rgba(110,231,183,0.06) 0%, var(--surface) 100%);
+  }
+
+  .status-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 20px; right: 20px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 0 0 2px 2px;
+    transform: scaleX(0);
+    transition: transform 0.4s;
+  }
+
+  .status-card.active::before {
+    transform: scaleX(1);
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .status-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--muted);
+    display: inline-block;
+    margin-right: 8px;
+    transition: background 0.3s;
+  }
+
+  .active .status-dot {
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Toggle switch */
+  .toggle {
+    width: 44px; height: 24px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .toggle.on {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+
+  .toggle.on::after {
+    transform: translateX(20px);
+    background: #0c0c14;
+  }
+
+  .status-main {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .active .status-main {
+    color: var(--accent);
+  }
+
+  .status-sub {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .status-sub strong {
+    color: var(--text);
+  }
+
+  /* Timer */
+  .timer-display {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .timer-block {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+
+  .timer-block .val {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--accent);
+    display: block;
+  }
+
+  .timer-block .lbl {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* ── Stats row ── */
+  .stats-row {
+    margin: 0 16px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    display: block;
+  }
+
+  .stat-lbl {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* ── Blocked sites preview ── */
+  .blocked-section {
+    margin: 0 16px 16px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-count {
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  .site-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+  }
+
+  .chip.more {
+    color: var(--accent);
+    border-color: rgba(110,231,183,0.3);
+    background: var(--accent-dim);
+    cursor: pointer;
+  }
+
+  /* ── Mode pills ── */
+  .mode-row {
+    margin: 0 16px 16px;
+    display: flex;
+    gap: 6px;
+  }
+
+  .mode-pill {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .mode-pill.active {
+    background: var(--accent-dim);
+    border-color: rgba(110,231,183,0.4);
+    color: var(--accent);
+  }
+
+  /* Footer */
+  .footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-link {
+    font-size: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-link:hover { color: var(--accent); }
+
+  /* Loading state */
+  .loading { opacity: 0.5; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L3 6.5v5C3 16.5 7 21 12 22c5-1 9-5.5 9-10.5v-5L12 2z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-name">ContextFocus</div>
+      <div class="logo-version">v1.0</div>
+    </div>
+  </div>
+  <button class="settings-btn" id="settingsBtn" title="Settings" aria-label="Settings">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Status Card -->
+<div class="status-card" id="statusCard">
+  <div class="status-row">
+    <div class="status-label">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusLabel">Monitoring</span>
+    </div>
+    <div class="toggle" id="mainToggle"></div>
+  </div>
+
+  <div class="status-main" id="statusMain">Watching...</div>
+  <div class="status-sub" id="statusSub">
+    Open a work tab to activate automatically.
+  </div>
+
+  <div class="timer-display" id="timerDisplay" style="display:none">
+    <div class="timer-block">
+      <span class="val" id="timerMins">00</span>
+      <span class="lbl">Min</span>
+    </div>
+    <div class="timer-block">
+      <span class="val" id="timerSecs">00</span>
+      <span class="lbl">Sec</span>
+    </div>
+    <div class="timer-block">
+      <span class="val" id="timerBlocked">0</span>
+      <span class="lbl">Blocked</span>
+    </div>
+  </div>
+</div>
+
+<!-- Mode row -->
+<div class="mode-row">
+  <div class="mode-pill active" id="modeAuto" data-mode="auto">⚡ Auto</div>
+  <div class="mode-pill" id="modeManual" data-mode="manual">✋ Manual</div>
+  <div class="mode-pill" id="modeOff" data-mode="off">○ Off</div>
+</div>
+
+<!-- Stats -->
+<div class="stats-row">
+  <div class="stat-card">
+    <span class="stat-val" id="statToday">0m</span>
+    <span class="stat-lbl">Today</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-val" id="statTotal">0m</span>
+    <span class="stat-lbl">All time</span>
+  </div>
+</div>
+
+<!-- Blocked sites -->
+<div class="blocked-section">
+  <div class="section-header">
+    <span class="section-title">Blocked</span>
+    <span class="section-count" id="blockedCount">15 sites</span>
+  </div>
+  <div class="site-chips" id="siteChips"></div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <span class="footer-link" id="manageListsBtn">⚙ Manage Lists</span>
+  <span class="footer-link" id="contextReason"></span>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>

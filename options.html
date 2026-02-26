@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContextFocus — Settings</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&family=Syne:wght@700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a10;
+    --surface: #12121c;
+    --surface2: #1a1a28;
+    --border: #22223a;
+    --accent: #6ee7b7;
+    --accent-dim: rgba(110,231,183,0.1);
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --danger: #f87171;
+    --amber: #f59e0b;
+  }
+
+  body {
+    font-family: 'Space Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .layout {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .logo-icon {
+    width: 44px; height: 44px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(110,231,183,0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-icon svg {
+    width: 22px; height: 22px;
+    color: var(--accent);
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  .page-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 32px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-left: 2px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .card-row {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-row:last-child { border-bottom: none; }
+
+  .row-info h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .row-info p {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .toggle {
+    width: 44px; height: 24px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .toggle.on { background: var(--accent); border-color: var(--accent); }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+
+  .toggle.on::after {
+    transform: translateX(20px);
+    background: #0a0a10;
+  }
+
+  /* ── List management ── */
+  .list-container {
+    padding: 20px;
+  }
+
+  .list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .list-title {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .add-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--accent);
+  }
+
+  input[type="text"]::placeholder { color: var(--muted); }
+
+  .btn {
+    padding: 10px 18px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a10;
+  }
+
+  .btn-primary:hover { background: #a7f3d0; }
+
+  .btn-ghost {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .site-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .site-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .site-tag.custom {
+    border-color: rgba(110,231,183,0.3);
+    background: var(--accent-dim);
+  }
+
+  .site-tag .remove {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1;
+    transition: color 0.15s;
+    margin-left: 2px;
+  }
+
+  .site-tag .remove:hover { color: var(--danger); }
+
+  /* ── Goal slider ── */
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 8px;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(110,231,183,0.5);
+  }
+
+  .range-val {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 50px;
+    text-align: right;
+  }
+
+  /* ── Save button ── */
+  .save-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 -24px -40px;
+  }
+
+  .save-status {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .save-status.saved { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L3 6.5v5C3 16.5 7 21 12 22c5-1 9-5.5 9-10.5v-5L12 2z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+    </div>
+    <div>
+      <div class="page-title">ContextFocus Settings</div>
+      <div class="page-subtitle">Configure your focus environment</div>
+    </div>
+  </div>
+
+  <!-- Behavior -->
+  <div class="section">
+    <div class="section-label">Behavior</div>
+    <div class="card">
+      <div class="card-row">
+        <div class="row-info">
+          <h4>Auto-detect work context</h4>
+          <p>Automatically activate focus when you open Notion, Google Docs, GitHub, etc.</p>
+        </div>
+        <div class="toggle on" id="toggleAutoDetect" data-setting="autoDetect"></div>
+      </div>
+
+      <div class="card-row">
+        <div class="row-info">
+          <h4>Strict mode</h4>
+          <p>Prevent manual override during focus sessions. Adds a 30-second delay.</p>
+        </div>
+        <div class="toggle" id="toggleStrict" data-setting="strictMode"></div>
+      </div>
+
+      <div class="card-row">
+        <div class="row-info">
+          <h4>Motivational quotes</h4>
+          <p>Show focus quotes on the blocked page instead of just a wall.</p>
+        </div>
+        <div class="toggle on" id="toggleMotivation" data-setting="showMotivation"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily goal -->
+  <div class="section">
+    <div class="section-label">Daily Focus Goal</div>
+    <div class="card">
+      <div class="list-container">
+        <p style="font-size:12px; color:var(--muted); margin-bottom:16px;">
+          Set your daily focus target. We'll show progress in the popup.
+        </p>
+        <div class="slider-row">
+          <input type="range" id="goalSlider" min="15" max="480" step="15" value="120">
+          <span class="range-val" id="goalVal">2h 0m</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blocked sites -->
+  <div class="section">
+    <div class="section-label">Blocked Sites</div>
+    <div class="card">
+      <div class="list-container">
+        <div class="add-input-row">
+          <input type="text" id="newBlockedSite" placeholder="Add domain (e.g. twitch.tv)" />
+          <button class="btn btn-primary" id="addBlockedBtn">Add</button>
+        </div>
+        <div class="site-list" id="blockedList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom work domains -->
+  <div class="section">
+    <div class="section-label">Custom Work Domains</div>
+    <div class="card">
+      <div class="list-container">
+        <p style="font-size:12px; color:var(--muted); margin-bottom:16px;">
+          Add domains that should trigger focus mode (your company's internal tools, etc.)
+        </p>
+        <div class="add-input-row">
+          <input type="text" id="newWorkDomain" placeholder="e.g. app.yourcompany.com" />
+          <button class="btn btn-primary" id="addWorkDomainBtn">Add</button>
+        </div>
+        <div class="site-list" id="workDomainList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset -->
+  <div class="section">
+    <div class="section-label">Data</div>
+    <div class="card">
+      <div class="card-row">
+        <div class="row-info">
+          <h4>Reset statistics</h4>
+          <p>Clear all focus time history and streak data.</p>
+        </div>
+        <button class="btn btn-ghost" id="resetStatsBtn">Reset</button>
+      </div>
+      <div class="card-row">
+        <div class="row-info">
+          <h4>Restore defaults</h4>
+          <p>Reset blocked sites list to the original defaults.</p>
+        </div>
+        <button class="btn btn-ghost" id="restoreDefaultsBtn">Restore</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Save bar -->
+<div class="save-bar">
+  <div class="save-status" id="saveStatus">All changes saved automatically</div>
+  <button class="btn btn-primary" id="saveBtn">Save Settings</button>
+</div>
+
+<script src="options.js"></script>
+</body>
+</html>
