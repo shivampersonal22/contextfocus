@@ -1,56 +1,124 @@
-# contextfocus
-ContextFocus is a smart focus blocker that activates automatically — no timers, no manual buttons, no setup required.
+# ContextFocus ⚡
 
-The moment you open a work tab (Notion, GitHub, Google Docs, Figma, Linear, Jira, VS Code, Slack, and 25+ others), ContextFocus instantly blocks distracting websites like YouTube, Reddit, Twitter, TikTok, Netflix, and more.
+> Blocks distractions automatically the moment you open a work tab. No timers. No setup. No buttons.
 
-HOW IT WORKS:
-Open a work tab → Focus mode activates automatically → Distractions are blocked until you're done
+---
 
-FEATURES:
-- Auto-detects 30+ work tools including Notion, GitHub, Figma, Google Workspace, Linear, Jira, Trello, Asana, Miro, Zoom, Slack, and more
-- Blocks 15 distraction sites by default — fully customizable
-- Live focus timer shows how long you've been in the zone
-- 3 modes: Auto (recommended), Manual, or Off
-- 10-second override delay so you can still access a site if truly needed
-- Sweeps already-open distraction tabs when focus activates
-- Add custom work domains for your company's internal tools
-- Tracks daily and total focus time
-- Zero signup, zero account, zero data collected
+## How It Works
 
-PERFECT FOR:
-Developers, designers, writers, students, and remote workers who struggle with distraction while working.
+1. You open Notion, GitHub, Google Docs, Figma — or any of 30+ work tools
+2. ContextFocus detects you're working
+3. YouTube, Reddit, Twitter, and 12 more sites are instantly blocked
+4. Close your work tab → focus mode turns off automatically
 
-ContextFocus is free and open source. Install it and just open Notion or GitHub — it handles the rest.
-Focus blockermost , distraction blocker,productivity extensionbroad block youtube workpeople website blocker auto focus modeblock reddit chromespecific intent, high conversion
+**No configuration needed. Just install and start working.**
 
+---
 
-ContextFocus is a context-aware focus blocker. No account or login required.
+## Install
 
-HOW TO TEST THE CORE FEATURE:
-1. Install the extension
-2. Open any of these URLs in a new tab:
-   - https://notion.so (or any Google Docs / GitHub page)
-3. The extension popup badge will show "ON" and turn green automatically
-4. Now try to open https://www.youtube.com in any tab
-5. You will be redirected to the built-in blocked page (blocked.html)
-6. The blocked page shows a motivational quote and a "Back to Work" button
-7. Clicking "I really need this site" starts a 10-second countdown before allowing access
+### Chrome (Load Unpacked — Free)
+1. Download `contextfocus.zip` from [Releases](../../releases)
+2. Unzip the folder
+3. Open Chrome → go to `chrome://extensions`
+4. Enable **Developer Mode** (toggle in top right)
+5. Click **Load unpacked** → select the unzipped `contextfocus` folder
+6. Pin the extension to your toolbar
 
-HOW TO TEST MANUAL MODE:
-1. Click the extension icon in the toolbar
-2. Click the toggle switch to turn focus ON manually
-3. Try visiting youtube.com, reddit.com, or twitter.com — all will be blocked
+### Firefox
+Coming soon on Firefox Add-ons.
 
-HOW TO TEST SETTINGS:
-1. Click the extension icon → click the gear icon (⚙) → Options page opens
-2. You can add/remove blocked sites and custom work domains
-3. Toggle strict mode, auto-detect, and motivational quotes on/off
+---
 
-ALREADY-OPEN TABS:
-If YouTube is already open when focus activates, that tab is automatically redirected to the blocked page. Test by opening youtube.com first, then opening notion.so in another tab.
+## Features
 
-NO DEPENDENCIES:
-- No external APIs or accounts required
-- No network requests made by the extension
-- All data stored locally via chrome.storage.local
-- Permissions used: tabs, storage, alarms, webNavigation, scripting
+- **Auto-detection** — recognizes 30+ work tools including Notion, GitHub, Figma, Google Workspace, Linear, Jira, Trello, Asana, Miro, Zoom, Slack, and more
+- **Instant blocking** — blocks YouTube, Reddit, Twitter, TikTok, Netflix, Twitch and 9 more out of the box
+- **Sweeps open tabs** — if YouTube is already open when you start working, it gets blocked too
+- **Live focus timer** — see exactly how long you've been in the zone
+- **3 modes** — Auto (recommended), Manual, or Off
+- **Override with friction** — 10-second delay before you can bypass a block
+- **Customizable** — add/remove any blocked site, add your own work domains
+- **Tracks your time** — daily and all-time focus stats
+- **Zero data collected** — everything stored locally, no account, no servers
+
+---
+
+## Screenshots
+
+| Popup | Blocked Page |
+|---|---|
+| Focus activates automatically with a live timer | Clean blocked screen with a motivational quote |
+
+---
+
+## File Structure
+
+```
+contextfocus/
+├── manifest.json          # Extension config (Manifest V3)
+├── background.js          # Service worker — detection + blocking logic
+├── content.js             # DOM signal detection on pages
+├── blocked.html           # Page shown when a site is blocked
+├── blocked.js             # Logic for the blocked page
+├── popup/
+│   ├── popup.html         # Toolbar popup UI
+│   └── popup.js           # Popup logic
+├── options/
+│   ├── options.html       # Settings page
+│   └── options.js         # Settings logic
+└── icons/
+    ├── icon16.png
+    ├── icon48.png
+    └── icon128.png
+```
+
+---
+
+## Permissions Used
+
+| Permission | Why |
+|---|---|
+| `tabs` | Monitor which tabs are open to detect work context |
+| `webNavigation` | Intercept navigation to blocked sites |
+| `storage` | Save your settings and stats locally |
+| `scripting` | Run content script to detect work signals on pages |
+| `alarms` | Track focus time every minute |
+
+No external network requests. No data leaves your browser. Ever.
+
+---
+
+## Detected Work Tools
+
+Notion • GitHub • GitLab • Google Docs • Google Sheets • Google Slides • Gmail • Figma • Linear • Jira • Confluence • Trello • Asana • ClickUp • Monday • Miro • Canva • Slack • Zoom • VS Code Web • CodePen • Replit • Basecamp • Substack • WordPress • SharePoint • OneDrive • Office.com
+
+**Plus:** add any custom domain in Settings for your company's internal tools.
+
+---
+
+## Roadmap
+
+- [ ] Firefox Add-ons store release
+- [ ] Weekly focus reports
+- [ ] Scheduled focus sessions (auto-block 9am–12pm daily)
+- [ ] Focus streaks and goals
+- [ ] Team dashboard for companies
+
+---
+
+## Support This Project
+
+If ContextFocus saves you even 30 minutes of distraction per week, consider buying me a coffee ☕
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?style=flat&logo=buy-me-a-coffee)](https://buymeacoffee.com)
+
+---
+
+## License
+
+MIT — free to use, modify, and distribute.
+
+---
+
+*Built by [@shivampersonal22](https://github.com/shivampersonal22)*
