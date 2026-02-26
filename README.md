@@ -26,7 +26,7 @@
 6. Pin the extension to your toolbar
 
 ### Firefox
-Coming soon on Firefox Add-ons.
+[Coming soon on Firefox Add-ons.](https://addons.mozilla.org/en-GB/firefox/addon/context-focus/)
 
 ---
 
