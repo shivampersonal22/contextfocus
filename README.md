@@ -48,7 +48,9 @@ Coming soon on Firefox Add-ons.
 
 | Popup | Blocked Page |
 |---|---|
-| Focus activates automatically with a live timer | Clean blocked screen with a motivational quote |
+| <img width="1280" height="800" alt="screenshot_1_popup" src="https://github.com/user-attachments/assets/aea0baab-274a-4381-92d1-a5422cb8a8d4" />
+ | <img width="1280" height="800" alt="screenshot_2_blocked" src="https://github.com/user-attachments/assets/ac4641a5-581b-4b6e-88bd-15573a399130" />
+ |
 
 ---
 
